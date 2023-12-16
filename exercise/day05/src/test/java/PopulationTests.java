@@ -6,6 +6,7 @@ import people.PetType;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
@@ -40,10 +41,8 @@ class PopulationTests {
 
     @Test
     void peopleWithTheirPets() {
-        final var response = formatPopulation();
-
-        assertThat(response)
-                .hasToString("Peter Griffin who owns : Tabby " + lineSeparator() +
+        assertThat(formatPopulation())
+                .isEqualTo("Peter Griffin who owns : Tabby " + lineSeparator() +
                         "Stewie Griffin who owns : Dolly Brian " + lineSeparator() +
                         "Joe Swanson who owns : Spike " + lineSeparator() +
                         "Lois Griffin who owns : Serpy " + lineSeparator() +
@@ -53,25 +52,32 @@ class PopulationTests {
                         "Glenn Quagmire");
     }
 
-    private static StringBuilder formatPopulation() {
-        final var response = new StringBuilder();
+    private static String formatPopulation() {
+        return population
+                .stream()
+                .map(PopulationTests::formatPerson)
+                .collect(Collectors.joining(lineSeparator()));
+    }
 
-        for (var person : population) {
-            response.append(format("%s %s", person.firstName(), person.lastName()));
+    private static String formatPerson(Person person) {
+        var response = new StringBuilder();
+        response.append(format("%s %s", person.firstName(), person.lastName()));
+        appendPets(response, person);
+        return response.toString();
+    }
 
-            if (!person.pets().isEmpty()) {
-                response.append(" who owns : ");
-            }
-
-            for (var pet : person.pets()) {
-                response.append(pet.name()).append(" ");
-            }
-
-            if (!population.getLast().equals(person)) {
-                response.append(lineSeparator());
-            }
+    private static void appendPets(StringBuilder response, Person person) {
+        if (person.pets().isEmpty()) {
+            return;
         }
-        return response;
+        response.append(" who owns : ");
+        person.pets()
+                .stream()
+                .map(Pet::name)
+                .forEach(p -> response
+                        .append(p)
+                        .append(" ")
+                );
     }
 
     @Test
