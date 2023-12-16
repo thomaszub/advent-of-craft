@@ -1,6 +1,11 @@
 package games;
 
 public class FizzBuzz {
+
+    private static final int FIZZ = 3;
+
+    private static final int BUZZ = 5;
+
     private FizzBuzz() {
     }
 
@@ -8,13 +13,13 @@ public class FizzBuzz {
         if (input <= 0 || input > 100) {
             throw new OutOfRangeException();
         }
-        if (input % 3 == 0 && input % 5 == 0) {
+        if (input % FIZZ == 0 && input % BUZZ == 0) {
             return "FizzBuzz";
         }
-        if (input % 3 == 0) {
+        if (input % FIZZ == 0) {
             return "Fizz";
         }
-        if (input % 5 == 0) {
+        if (input % BUZZ == 0) {
             return "Buzz";
         }
         return input.toString();
